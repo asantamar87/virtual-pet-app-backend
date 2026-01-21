@@ -1,41 +1,72 @@
-# 🐾 Virtual Pet API - IT Academy Case Study
+# 🐾 Virtual Pet API - Backend
 
-API REST para la gestión de mascotas virtuales, desarrollada con **Spring Boot 3**, siguiendo principios de **Arquitectura Limpia** y seguridad **JWT**.
+This is the robust RESTful Backend for the **Virtual Pet** application, developed using **Java 17** and **Spring Boot 3**. It handles the core business logic, pet state management, and secure authentication.
 
-## 🚀 Tecnologías Utilizadas
-* **Java 17** & **Spring Boot 3**
-* **Spring Security** con **JWT** (Json Web Token)
-* **JPA / Hibernate** con base de datos H2 (en memoria)
-* **MapStruct** para mapeo de DTOs
-* **Lombok** para reducir código repetitivo
-* **SLF4J** para Logging profesional
-* **Spring Cache** para optimización de rendimiento
+## 🚀 Tech Stack
 
-## 🏗️ Arquitectura
-El proyecto sigue una estructura de capas desacoplada:
-1. **Controller**: Endpoints REST con validación de entrada.
-2. **Service**: Lógica de negocio, gestión de caché y logs.
-3. **Repository**: Acceso a datos mediante Spring Data JPA.
-4. **Security**: Filtros JWT, UserPrincipal (Adaptador) y configuración de CORS para React.
+* **Framework:** [Spring Boot 3](https://spring.io/projects/spring-boot)
+* **Security:** Spring Security & JWT (JSON Web Tokens)
+* **Database:** H2 (In-Memory) / PostgreSQL
+* **ORM:** Spring Data JPA / Hibernate
+* **Language:** Java 17
+* **Documentation:** Swagger / OpenAPI (Optional)
 
-## 🛠️ Instalación y Ejecución
-1. Clonar el repositorio.
-2. Asegurarse de tener instalado **JDK 17** y **Maven**.
-3. Ejecutar `./mvnw spring-boot:run`.
-4. La API estará disponible en `http://localhost:8080`.
+## 🛠️ Key Technical Features
 
-## 🔑 Endpoints Principales
-### Autenticación (Público)
-* `POST /api/auth/register` - Registro de usuario.
-* `POST /api/auth/login` - Obtención de token JWT.
+### 🔐 Authentication & Authorization
+* **JWT Stateless Auth:** Secure communication using Bearer tokens.
+* **RBAC (Role-Based Access Control):** * `ROLE_USER`: Can create and manage their own pets.
+    * `ROLE_ADMIN`: Can monitor all pets across the entire system.
+* **Method Security:** Annotated controllers using `@PreAuthorize` for granular access control.
 
-### Mascotas (Privado - Requiere Bearer Token)
-* `GET /api/pets` - Lista las mascotas del usuario (o todas si es ADMIN).
-* `POST /api/pets` - Crea una nueva mascota.
-* `PATCH /api/pets/{id}/feed` - Alimenta a la mascota (+energía).
-* `PATCH /api/pets/{id}/play` - Juega con la mascota (+felicidad, -energía).
+### 🧬 Business Logic
+* **State Machine:** Pets have dynamic attributes (Hunger, Energy, Happiness, Health) that update through specific service actions (`feed()`, `play()`, `sleep()`).
+* **Ownership Validation:** Secure logic ensuring users can only interact with pets they own.
 
-## 📈 Características del Nivell 2
-- **Logging**: Implementado con SLF4J en controladores, servicios y seguridad para trazabilidad total.
-- **Caching**: Implementado con `@EnableCaching` para optimizar las consultas repetitivas de mascotas.
-- **CORS**: Configurado para permitir conexiones desde `http://localhost:3000` (React).
+### 📦 Optimized Data Transfer (DTOs)
+* **Java Records:** Used for immutable and lightweight data transfer.
+* **Infinite Recursion Prevention:** Specifically designed DTOs to break circular references between `User` and `Pet` entities during JSON serialization.
+
+## 🛠️ Setup and Installation
+
+1.  **Clone the repository:**
+    ```bash
+    git clone [https://github.com/your-username/virtualpet-api.git](https://github.com/your-username/virtualpet-api.git)
+    cd virtualpet-api
+    ```
+
+2.  **Configure Database:**
+    By default, the project uses **H2 In-Memory Database**. Configuration can be found in `src/main/resources/application.properties`.
+
+3.  **Build and Run:**
+    ```bash
+    ./mvnw spring-boot:run
+    ```
+    The API will be available at `http://localhost:8080`.
+
+## 🛣️ API Endpoints
+
+### Auth
+* `POST /api/auth/register` - Register a new user.
+* `POST /api/auth/login` - Authenticate and receive a JWT.
+
+### Pets (User)
+* `GET /api/pets` - List all pets owned by the authenticated user.
+* `POST /api/pets` - Create a new pet.
+* `POST /api/pets/{id}/feed` - Increase pet hunger stats.
+* `POST /api/pets/{id}/play` - Increase happiness/decrease energy.
+
+### Pets (Admin)
+* `GET /api/pets/all` - List every pet in the system (Requires `ROLE_ADMIN`).
+
+
+## 📂 Project Structure
+
+```text
+src/main/java/com/virtualpet/virtualpetapi/
+├── config/         # Security and CORS configurations
+├── controller/     # REST Controllers
+├── dto/            # Request and Response (Records)
+├── model/          # JPA Entities (User, Pet, Role)
+├── repository/     # Spring Data JPA Repositories
+└── service/        # Business logic implementation
