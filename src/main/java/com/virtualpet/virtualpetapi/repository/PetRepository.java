@@ -10,9 +10,6 @@ import java.util.List;
 @Repository
 public interface PetRepository extends JpaRepository<Pet, Long> {
 
-    // Mantiene la búsqueda por el objeto User completo
-    List<Pet> findByOwner(User owner);
-
     /**
      * Busca mascotas utilizando el nombre de usuario del dueño.
      * Spring Data JPA resuelve esto automáticamente navegando de

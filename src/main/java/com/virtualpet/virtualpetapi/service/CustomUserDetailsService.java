@@ -8,7 +8,5 @@ import org.springframework.security.core.userdetails.UserDetailsService;
  */
 public interface CustomUserDetailsService extends UserDetailsService {
 
-    // Podrías añadir métodos adicionales que no existen en la interfaz base,
-    // por ejemplo, si necesitaras buscar usuarios por email o validar estados.
-    // UserDetails loadUserByEmail(String email);
+
 }

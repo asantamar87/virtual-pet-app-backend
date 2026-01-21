@@ -42,8 +42,6 @@ public interface PetService {
      */
     void deletePet(Long id, String username);
 
-    // --- Métodos de Interacción (Lógica de estado) ---
-    // También validan dueño o administrador para permitir supervisión técnica.
 
     PetResponse feedPet(Long id, String username);
 
