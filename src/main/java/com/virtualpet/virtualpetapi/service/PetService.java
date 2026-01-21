@@ -7,6 +7,12 @@ import java.util.List;
 public interface PetService {
 
     /**
+     * Lista todas las mascotas del sistema sin importar el propietario.
+     * Uso exclusivo para usuarios con ROLE_ADMIN.
+     */
+    List<PetResponse> getAllPets();
+
+    /**
      * Crea una mascota y la vincula al usuario especificado.
      * @param request Datos básicos (nombre, especie).
      * @param username Nombre de usuario extraído del Token JWT.
@@ -19,21 +25,25 @@ public interface PetService {
     List<PetResponse> getAllMyPets(String username);
 
     /**
-     * Obtiene el detalle de una mascota, validando que el username sea el dueño.
+     * Obtiene el detalle de una mascota.
+     * Valida que el usuario sea el dueño o tenga ROLE_ADMIN.
      */
     PetResponse getPetById(Long id, String username);
 
     /**
-     * Actualiza nombre o especie, validando propiedad del recurso.
+     * Actualiza nombre o especie.
+     * Valida propiedad del recurso o permisos de ROLE_ADMIN.
      */
     PetResponse updatePet(Long id, PetRequest request, String username);
 
     /**
-     * Elimina la mascota del sistema si el usuario es el dueño.
+     * Elimina la mascota del sistema.
+     * Valida propiedad del recurso o permisos de ROLE_ADMIN.
      */
     void deletePet(Long id, String username);
 
     // --- Métodos de Interacción (Lógica de estado) ---
+    // También validan dueño o administrador para permitir supervisión técnica.
 
     PetResponse feedPet(Long id, String username);
 

@@ -49,10 +49,13 @@ public class AuthServiceImpl implements AuthService {
         user.setUsername(registerRequest.username());
         user.setPassword(passwordEncoder.encode(registerRequest.password()));
 
+        // MEJORA: Buscar el rol o crearlo si no existe (Just-in-time initialization)
         Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
-                .orElseThrow(() -> {
-                    log.error("Error crítico: No se encontró el rol ROLE_USER en la base de datos");
-                    return new RuntimeException("Error: Rol no encontrado.");
+                .orElseGet(() -> {
+                    log.warn("Rol ROLE_USER no encontrado, creándolo automáticamente...");
+                    Role newRole = new Role();
+                    newRole.setName(RoleName.ROLE_USER);
+                    return roleRepository.save(newRole);
                 });
 
         user.setRoles(Collections.singleton(userRole));
